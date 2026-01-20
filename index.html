@@ -327,7 +327,7 @@
                 <h1 class="text-white text-lg font-extrabold tracking-tight uppercase">Bharat Bonus Fest</h1>
             </div>
             <div class="flex items-center">
-                <div onclick="openProgressSheet()"
+                <div id="btn-open-progress"
                     class="flex items-center justify-center bg-[#1a1f2e] p-1 rounded-full border border-white/10 shadow-sm cursor-pointer hover:bg-white/5 transition-colors">
                     <div class="flex items-center justify-center size-8 bg-accent-gold rounded-full">
                         <span aria-hidden="true"
@@ -404,11 +404,11 @@
         <section class="px-4 py-6">
             <div id="tabs-container"
                 class="flex h-12 items-center justify-center rounded-xl bg-navy-card p-1 gap-1 border border-white/5 reveal blur-md pointer-events-none transition-all duration-700">
-                <button id="btn-cards" onclick="switchTab('cards')"
+                <button id="btn-cards"
                     class="flex-1 flex h-full items-center justify-center rounded-lg bg-accent-gold text-navy-dark text-sm font-bold transition-all shadow-md">
                     Credit Cards
                 </button>
-                <button id="btn-loans" onclick="switchTab('loans')"
+                <button id="btn-loans"
                     class="flex-1 flex h-full items-center justify-center rounded-lg text-gray-400 text-sm font-bold hover:bg-white/5 transition-all">
                     Loans
                 </button>
@@ -666,7 +666,7 @@
                             </div>
                             <input id="range-cards"
                                 class="w-full h-2 bg-navy-dark border border-white/10 rounded-lg appearance-none cursor-pointer accent-accent-gold"
-                                max="150" min="0" type="range" value="25" oninput="updateCalculator()" />
+                                max="150" min="0" type="range" value="25" />
                         </div>
                         <div class="space-y-4">
                             <div class="flex justify-between items-center">
@@ -675,8 +675,7 @@
                             </div>
                             <input id="range-loans"
                                 class="w-full h-2 bg-navy-dark border border-white/10 rounded-lg appearance-none cursor-pointer accent-accent-gold"
-                                max="10000000" min="0" step="100000" type="range" value="800000"
-                                oninput="updateCalculator()" />
+                                max="10000000" min="0" step="100000" type="range" value="800000" />
                         </div>
                     </div>
                 </div>
@@ -782,7 +781,7 @@
                 <div class="space-y-3">
                     <!-- FAQ 1 -->
                     <div class="border-b border-white/10 py-4 reveal">
-                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleFaq(this)">
+                        <div class="flex justify-between items-center cursor-pointer faq-toggle">
                             <h4 class="text-sm font-bold text-gray-200">Is Bonus included in lead payout?</h4>
                             <span class="material-symbols-outlined text-accent-gold rotate-icon">expand_more</span>
                         </div>
@@ -795,7 +794,7 @@
 
                     <!-- FAQ 2 -->
                     <div class="border-b border-white/10 py-4 reveal">
-                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleFaq(this)">
+                        <div class="flex justify-between items-center cursor-pointer faq-toggle">
                             <h4 class="text-sm font-bold text-gray-200">Who is eligible for bonus?</h4>
                             <span class="material-symbols-outlined text-accent-gold rotate-icon">expand_more</span>
                         </div>
@@ -808,7 +807,7 @@
 
                     <!-- FAQ 3 -->
                     <div class="border-b border-white/10 py-4 reveal">
-                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleFaq(this)">
+                        <div class="flex justify-between items-center cursor-pointer faq-toggle">
                             <h4 class="text-sm font-bold text-gray-200">Which product leads are included in the Bonus?
                             </h4>
                             <span class="material-symbols-outlined text-accent-gold rotate-icon">expand_more</span>
@@ -839,7 +838,7 @@
 
                     <!-- FAQ 4 -->
                     <div class="border-b border-white/10 py-4 reveal">
-                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleFaq(this)">
+                        <div class="flex justify-between items-center cursor-pointer faq-toggle">
                             <h4 class="text-sm font-bold text-gray-200">If I reach the top level, will I get payouts for
                                 all
                                 levels?
@@ -1427,6 +1426,30 @@
         // Initialize confetti after page load
         window.addEventListener('load', initConfetti);
 
+        // ATTACH EVENT LISTENERS (Cloudflare Rocket Loader Fix)
+        // We use addEventListener instead of inline onclick/oninput to bypass Rocket Loader overrides
+        document.addEventListener('DOMContentLoaded', () => {
+            // Main Tabs
+            document.getElementById('btn-cards')?.addEventListener('click', () => switchTab('cards'));
+            document.getElementById('btn-loans')?.addEventListener('click', () => switchTab('loans'));
+
+            // Calculator
+            document.getElementById('range-cards')?.addEventListener('input', updateCalculator);
+            document.getElementById('range-loans')?.addEventListener('input', updateCalculator);
+
+            // FAQ Toggles
+            document.querySelectorAll('.faq-toggle').forEach(el => {
+                el.addEventListener('click', function () { toggleFaq(this); });
+            });
+
+            // Progress Sheet
+            document.getElementById('btn-open-progress')?.addEventListener('click', openProgressSheet);
+            document.getElementById('progress-overlay')?.addEventListener('click', closeProgressSheet);
+            document.getElementById('btn-close-progress')?.addEventListener('click', closeProgressSheet);
+            document.getElementById('prog-tab-card')?.addEventListener('click', () => switchProgressTab('cards'));
+            document.getElementById('prog-tab-loan')?.addEventListener('click', () => switchProgressTab('loans'));
+        });
+
     </script>
 
     <!-- Full Page Confetti Canvas -->
@@ -1434,14 +1457,14 @@
 
 
     <!-- User Progress Bottom Sheet -->
-    <div id="progress-overlay" class="fixed inset-0 bg-black/80 z-[60] hidden opacity-0 transition-opacity duration-300"
-        onclick="closeProgressSheet()"></div>
+    <div id="progress-overlay"
+        class="fixed inset-0 bg-black/80 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
     <div id="progress-sheet"
         class="fixed bottom-0 left-0 right-0 z-[70] bg-navy-card rounded-t-3xl transform translate-y-full transition-transform duration-300 max-w-md mx-auto border-t border-white/10 shadow-2xl pb-6">
         <!-- Header -->
         <div class="flex justify-between items-center p-6 border-b border-white/5">
             <h3 class="text-xl font-black text-white tracking-tight">Your Progress</h3>
-            <button onclick="closeProgressSheet()" class="text-gray-400 hover:text-white transition-colors">
+            <button id="btn-close-progress" class="text-gray-400 hover:text-white transition-colors">
                 <span class="material-symbols-outlined font-bold">close</span>
             </button>
         </div>
@@ -1450,10 +1473,10 @@
         <div class="p-6 space-y-6">
             <!-- Tabs -->
             <div class="flex p-1 bg-navy-dark rounded-xl border border-white/5">
-                <button id="prog-tab-card" onclick="switchProgressTab('cards')"
+                <button id="prog-tab-card"
                     class="flex-1 py-3 rounded-lg text-sm font-bold bg-accent-gold text-navy-dark shadow-sm transition-all uppercase tracking-wide">Credit
                     Card</button>
-                <button id="prog-tab-loan" onclick="switchProgressTab('loans')"
+                <button id="prog-tab-loan"
                     class="flex-1 py-3 rounded-lg text-sm font-bold text-gray-400 hover:bg-white/5 transition-all uppercase tracking-wide">Loans</button>
             </div>
 
