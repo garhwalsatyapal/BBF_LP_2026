@@ -712,10 +712,10 @@
                         </div>
                     </div>
 
-                    <!-- Item 2: 17 Feb 2026 -->
-                    <div class="flex gap-4 items-center mb-6 relative z-10" data-milestone-date="2026-02-17">
+                    <!-- Item 2: 19 Feb 2026 -->
+                    <div class="flex gap-4 items-center mb-6 relative z-10" data-milestone-date="2026-02-19">
                         <div class="w-14 text-right pt-2 shrink-0">
-                            <div class="text-white font-black text-sm leading-none mb-0.5">17 Feb</div>
+                            <div class="text-white font-black text-sm leading-none mb-0.5">19 Feb</div>
                             <div class="text-gray-500 font-bold text-[10px]">2026</div>
                         </div>
                         <div class="relative flex justify-center w-8 shrink-0">
@@ -800,7 +800,7 @@
                             <span class="material-symbols-outlined text-accent-gold rotate-icon">expand_more</span>
                         </div>
                         <div class="faq-answer text-gray-400 text-sm mt-0 px-1 leading-relaxed">
-                            <p class="pt-2">All advisors who meet reach at least level 1 will qualify for the additional
+                            <p class="pt-2">All advisors who reach at least level 1 will qualify for the additional
                                 payout.
                             </p>
                         </div>
@@ -1067,6 +1067,10 @@
                     marker.classList.add('pending');
                     marker.classList.remove('completed');
                     card.classList.remove('active');
+
+                    // If this is the next upcoming milestone, we could potentially mark it as "active" 
+                    // or just leave the last completed one active. 
+                    // For now, let's ensure the card doesn't have the active class if it's pending.
                 }
             });
 
